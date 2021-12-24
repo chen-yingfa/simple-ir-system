@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>信息检索demo</title>
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div id="header-container">
+      <div id="page-title-container">
+        <h1>{{ title }}</h1>
+      </div>
+      <div id="search-bar-container">
+        <input type="text" id="search-bar" name="query" v-on:keyup.enter="onSearch" />
+        <button id="search-button" v-on:click="onSearch">{{ searchButtonText }}</button>
+        <button id="sort-order-button" v-on:click="onClickSortOrder">降序</button>
+      </div>
+      <div id="filter-container">
+        <div id="filter-time-form">
+          <div id="filter-time-start">
+            最早：
+            <input type="text" class="filter-time-start-input" id="filter-time-start-input-year" value="2000" v-on:keyup.enter="onSearch" />
+            <input type="text" class="filter-time-start-input" id="filter-time-start-input-month" value="1" v-on:keyup.enter="onSearch" />
+            <input type="text" class="filter-time-start-input" id="filter-time-start-input-day" value="1" v-on:keyup.enter="onSearch" />
+          </div>
+          <div id="filter-time-stop">
+            最晚：
+            <input type="text" class="filter-time-stop-input" id="filter-time-stop-input-year" value="2015" v-on:keyup.enter="onSearch" />
+            <input type="text" class="filter-time-stop-input" id="filter-time-stop-input-month" value="12" v-on:keyup.enter="onSearch" />
+            <input type="text" class="filter-time-stop-input" id="filter-time-stop-input-day" value="31" v-on:keyup.enter="onSearch" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="body-container">
+      <div class="page-nav-container">
+        <div id="search-result-stat">
+          <p>{{ searchResultStat }}</p>
+        </div>
+        <div class="page-nav-prev" v-on:click="onPrevPage">上一页</div>
+        <div class="cur-page">第 <input type="text" class="cur-page-input" name="cur-page"
+            v-on:keyup.enter="onInputCurPage" /> / {{ pageCount }} 页</div>
+        <div class="page-nav-next" v-on:click="onNextPage">下一页</div>
+      </div>
+      <div id="docs-container">
+        <div id="docs-list-container">
+          <div class="doc-item" v-for="doc in docs">
+            <div class="doc-item-stat-item">
+              <div class="doc-item-stat-name">发布日期：</div>
+              <div class="doc-item-stat-val" class="doc-item-stat-date">{{ doc.date }}</div>
+            </div>
+            <div class="doc-item-stat-item">
+              <div class="doc-item-stat-name">标题：</div>
+              <div class="doc-item-stat-val">{{ doc.title }}</div>
+            </div>
+            <div class="doc-item-stat-item">
+              <div class="doc-item-stat-name">作者：</div>
+              <div class="doc-item-stat-val">{{ doc.author }}</div>
+            </div>
+            <div class="doc-item-stat-item">
+              <div class="doc-item-stat-name">栏目：</div>
+              <div class="doc-item-stat-val">{{ doc.column }}</div>
+            </div>
+            <div class="doc-item-stat-item">
+              <div class="doc-item-stat-name">数据来源：</div>
+              <div class="doc-item-stat-val">{{ doc.file_name }}</div>
+            </div>
+            <br />
+            <div class="doc-item-content" v-html="highlight(doc.content)"></div>
+          </div>
+        </div>
+        <div id="no-result-text">无结果</div>
+      </div>
+      <div class="page-nav-container">
+        <div class="page-nav-prev" v-on:click="onPrevPage">上一页</div>
+        <div class="cur-page">第 <input type="text" class="cur-page-input" name="cur-page"
+            v-on:keyup.enter="onInputCurPage" /> / {{ pageCount }} 页</div>
+        <div class="page-nav-next" v-on:click="onNextPage">下一页</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+
+</html>
