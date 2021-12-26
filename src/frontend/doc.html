@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>信息检索demo</title>
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="doc.css">
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div id="back-button-container">
+      <button id="back-button" v-on:click="onExit">返回搜索</button>
+    </div>
+
+    <div id="body-container">
+      <div id="doc-detail-container">
+        <div id="doc-detail">
+          <div class="doc-item-stat-item">
+            <div class="doc-item-stat-name">发布日期：</div>
+            <div class="doc-item-stat-val" class="doc-item-stat-date">{{ readingDoc.date }}</div>
+          </div>
+          <div class="doc-item-stat-item">
+            <div class="doc-item-stat-name">标题：</div>
+            <div class="doc-item-stat-val">{{ readingDoc.title }}</div>
+          </div>
+          <div class="doc-item-stat-item">
+            <div class="doc-item-stat-name">作者：</div>
+            <div class="doc-item-stat-val">{{ readingDoc.author }}</div>
+          </div>
+          <div class="doc-item-stat-item">
+            <div class="doc-item-stat-name">栏目：</div>
+            <div class="doc-item-stat-val">{{ readingDoc.column }}</div>
+          </div>
+          <div class="doc-item-stat-item">
+            <div class="doc-item-stat-name">数据来源：</div>
+            <div class="doc-item-stat-val">{{ readingDoc.file_name }}</div>
+          </div>
+          <div class="doc-item-content">
+            <div class="doc-item-content-title">正文：</div>
+            <p class="doc-item-content-text">{{ readingDoc.content }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sep-line-container">
+        <div class="sep-line"></div>
+      </div>
+
+      <div id="similar-docs-header-container">
+        <p>相似文章</p>
+      </div>
+
+      <div id="docs-container">
+        <div id="docs-list-container">
+          <div class="doc-item" v-for="doc in docs" :doc-id="doc.id" v-on:click="onClickDocItem">
+            <div class="doc-item-stat-item">
+              <div class="doc-item-stat-name">发布日期：</div>
+              <div class="doc-item-stat-val" class="doc-item-stat-date">{{ doc.date }}</div>
+            </div>
+            <div class="doc-item-stat-item">
+              <div class="doc-item-stat-name">标题：</div>
+              <div class="doc-item-stat-val">{{ doc.title }}</div>
+            </div>
+            <!-- <div class="doc-item-stat-item">
+              <div class="doc-item-stat-name">作者：</div>
+              <div class="doc-item-stat-val">{{ doc.author }}</div>
+            </div>
+            <div class="doc-item-stat-item">
+              <div class="doc-item-stat-name">栏目：</div>
+              <div class="doc-item-stat-val">{{ doc.column }}</div>
+            </div>
+            <div class="doc-item-stat-item">
+              <div class="doc-item-stat-name">数据来源：</div>
+              <div class="doc-item-stat-val">{{ doc.file_name }}</div>
+            </div> -->
+            <!-- <br /> -->
+            <div class="doc-item-content">{{ doc.content }}</div>
+          </div>
+        </div>
+        <div class="loading-suggestion-container">
+          <p>正在加载推荐……</p>
+        </div>
+        <!-- <div id="load-more-container">
+          <button id="load-more-button" v-on:click="loadMore">加载更多</button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <script src="doc.js"></script>
+</body>
+
+</html>

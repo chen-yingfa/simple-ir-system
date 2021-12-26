@@ -116,7 +116,6 @@ def search_bool_expr():
             'message': 'datebase error'
         }
         return jsonify(result)
-        
 
     # 返回结果
     result = {
@@ -124,6 +123,44 @@ def search_bool_expr():
         'docs': docs,
         'total': total_count
     }
+    return jsonify(result)
+
+
+@app.route('/get_doc')
+@cross_origin(support_credentials=True)
+def get_doc():
+    '''
+    Get and return one document by ID.
+    '''
+    doc_id = request.args.get('doc_id', None)
+    print('Trying to read:', doc_id)
+
+    try:
+        doc = utils.get_docs([doc_id])[0]
+    except:
+        # 无法从数据库获取文档，返回 error status
+        result = {'status': 'error', 'message': 'datebase error'}
+        return jsonify(result)
+    # 返回结果
+    result = {'status': 'success', 'doc': doc}
+    return jsonify(result)
+    
+
+@app.route('/get_similar_docs')
+@cross_origin(support_credentials=True)
+def get_similar_docs():
+    '''Given a doc ID, return 100 most similar documents'''
+    doc_id = request.args.get('doc_id', None)
+    assert doc_id is not None and doc_id.isnumeric()
+    doc_id = int(doc_id)
+    print('Getting similar docs of:', doc_id)
+
+    # TODO: Update this when sim docs are done
+    sim_docs = utils.get_sim_docs(doc_id)
+    # sim_docs = list(range(100))
+
+    docs = utils.get_docs(sim_docs)[1:]  # `1:` because the first doc is itself.
+    result = {'status': 'success', 'docs': docs}
     return jsonify(result)
 
 

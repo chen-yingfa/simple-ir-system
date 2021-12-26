@@ -1,3 +1,5 @@
+from pathlib import Path
+import pickle as pkl
 from elasticsearch import Elasticsearch
 from pyroaring import BitMap
 
@@ -95,11 +97,11 @@ def process_boolean_query(bool_expr: str, postings_lists: {str: BitMap},
     for op in ['&', '|', '!', '(', ')']:
         bool_expr = bool_expr.replace(op, ' ' + op + ' ')
 
-    print('Processed:', bool_expr)
+    # print('Processed:', bool_expr)
 
     tokens = bool_expr.split()
 
-    print('Tokens:', tokens)
+    # print('Tokens:', tokens)
 
     def collapse_once():
         '''Pop an operator from operator stack, pop operand sets, then execute 
@@ -148,3 +150,16 @@ def process_boolean_query(bool_expr: str, postings_lists: {str: BitMap},
     if len(set_stack) != 1:
         raise ValueError('Invalid boolean query:', bool_expr)
     return set_stack[-1]
+
+
+def get_sim_docs(doc_index: int, chunk_size=2**12, corpus_size=612031) -> [int]:
+    '''Return indices of documents most similar to the given document.'''
+    chunk_start = doc_index // chunk_size * chunk_size
+    chunk_end = min(chunk_start + chunk_size, corpus_size)
+    offset = doc_index - chunk_start
+
+    sim_docs_dir = Path('../../data/similar_docs')
+    file = sim_docs_dir / f'{chunk_start}_{chunk_end}.pkl'
+    sim_docs = pkl.load(open(file, 'rb'))
+    
+    return sim_docs[offset]

@@ -172,6 +172,31 @@ var app = new Vue({
             }
             this.updatePageNav();
         },
+		parseContent(content, maxLen=null, maxParaCnt=null, paraPrefix='', paraSuffix='\n\n') {
+			let text = "";
+			let paraCnt = 0;
+			for (let pi in content) {
+				let para = content[pi];
+				let paraStr = ''
+				for (let si in para) {
+					sent = para[si];
+					paraStr += sent.join('');
+				}
+				if (paraStr.length == 0) continue; // Skip empty paragraph.
+				paraCnt++;
+				if (maxParaCnt && paraCnt > maxParaCnt) break;
+				text += paraPrefix + paraStr + paraSuffix;
+			}
+			text = text.trimEnd();
+			if (maxLen) {
+				if (text.length > maxLen) {
+					text = text.substring(0, maxLen).trimEnd();
+					text += "……";
+				}
+			}
+
+			return text;
+		},
         onGotDocs(result) {
             // Triggered when successfully fetched documents from database.
             console.log('onGotDocs');
@@ -200,19 +225,6 @@ var app = new Vue({
                 // If no results found, show no result text.
                 this.setElementVisible('#no-result-text', true);
             } else {
-                // Parse and add documents to `this.docs`.
-                function tokensNestedArrayToString(content) {
-                    text = "";
-                    for (let pi in content) {
-                        let para = content[pi];
-                        for (let si in para) {
-                            sent = para[si];
-                            text += sent.join('');
-                        }
-                        text += "\n\n";
-                    }
-                    return text;
-                }
                 function parseDate(s) {
                     // Parse date string, yyyy-mm-dd into yyyy年mm月dd日
                     let year = parseInt(s.substring(0, 4));
@@ -224,7 +236,7 @@ var app = new Vue({
                     // Concatenate tokens in `content` into a single string, where each
                     // paragraph is separated by two newlines (one blank line).
                     let doc = docs[i];
-                    doc.content = tokensNestedArrayToString(doc.content);
+                    doc.content = this.parseContent(doc.content, 300, 8, '    ', '\n');
                     doc.date = parseDate(doc.date);
                     this.docs.push(doc);
                 }
@@ -262,12 +274,9 @@ var app = new Vue({
             }
             this.onSearch();
         },
-        highlight(contentStr) {
-            // Highlight all occurences of query tokens in `contentStr` by
-            // inserting a HTML span.
-
+        getQueryTokens(queryStr) {
             // Get all tokens in query, remove operators
-            let query = this.query.toLowerCase();
+            let query = queryStr.toLowerCase();
             let toRemove = ['and', 'or', 'not', '(', ')', '（', '）'];
             for (let i in toRemove) {
                 query = query.replaceAll(toRemove[i], ' ');
@@ -275,6 +284,12 @@ var app = new Vue({
             // Make sure there are not contiguous spaces.
             query = query.replace(/\s+/g, ' ').trim();
             let tokens = query.split(' ');
+            return tokens;
+        },
+        highlight(contentStr) {
+            // Highlight all occurences of query tokens in `contentStr` by
+            // inserting a HTML span.
+            let tokens = this.getQueryTokens(this.query);
             for (let i in tokens) {
                 token = tokens[i];
                 let highlightedToken = '<span class="highlighted">' + token + '</span>'
@@ -301,6 +316,17 @@ var app = new Vue({
             this.searchResultStat = message;
             this.setElementVisible('#no-result-text', false);
             this.updatePageNav();
+        },
+        onClickDocItem(event) {
+            console.log("onClickDocItem()");
+            let clicked = event.target.closest('.doc-item');
+            let docId = clicked.getAttribute('doc-id');
+            console.log('docId', docId);
+            
+            params = new URLSearchParams();
+            params.append('docId', docId);
+            let targetUrl = `./doc.html?${params.toString()}`;
+            location.href = targetUrl;
         },
     }
 })

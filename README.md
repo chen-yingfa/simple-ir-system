@@ -10,11 +10,12 @@
 
 ## 项目结构
 
-代码主要分为三部分，全都位于 `src` 目录下：
+代码主要分为 4 部分，全都位于 `src` 目录下：
 
 1. 预处理：`preprocess.py` 和 `preprocess`
 2. 后端：`backend`
 3. 前端：`frontend`
+4. 文章相似性：`sbert`
 
 ## 执行
 
@@ -30,6 +31,12 @@
 - `token_to_id`：token 到 id 的映射。
 - `vocab.txt`：词汇表。
 - `id_to_date.txt`：id 到日期的映射。
+
+然后执行在 `sbert` 下执行 `python embedder.py` 生成每个文章的 top 100 个最相似文章，存到 `data` 和 `data/similar_docs`。
+
+- `text_docs.jsonl`：每个文章内容转换成连续文字。
+- `embeddings.pkl`：每个文章的向量。
+- `similar_docs/*.pkl`：每个文章的 top 100 最相似文章的 index。
 
 ### 2 后端
 

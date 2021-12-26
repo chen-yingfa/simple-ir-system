@@ -49,7 +49,7 @@
       </div>
       <div id="docs-container">
         <div id="docs-list-container">
-          <div class="doc-item" v-for="doc in docs">
+          <div class="doc-item" v-for="doc in docs" :doc-id="doc.id" v-on:click="onClickDocItem">
             <div class="doc-item-stat-item">
               <div class="doc-item-stat-name">发布日期：</div>
               <div class="doc-item-stat-val" class="doc-item-stat-date">{{ doc.date }}</div>

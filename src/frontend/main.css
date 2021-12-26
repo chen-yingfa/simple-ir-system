@@ -133,10 +133,19 @@ HEADER
 
 .doc-item {
 	width: 100%;
-	padding: 40px;
+	padding: 24px;
 	border-radius: 16px;
 	box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.658);
 	background-color: rgb(54, 54, 54);
+}
+
+.doc-item-content {
+	white-space: pre-wrap;
+}
+
+.doc-item:hover {
+	background-color: rgb(80, 80,160);
+	cursor: pointer;
 }
 
 .doc-item-stat-name {
